@@ -31,7 +31,7 @@ public class Exercises_uge6_6_1_3_a {
                        	con = DriverManager.getConnection(url, user, password);
 
 		} catch (SQLException ex) {
-		        Logger lgr = Logger.getLogger(DBtest.class.getName());
+		        Logger lgr = Logger.getLogger(ComputerStore.class.getName());
     			lgr.log(Level.WARNING, ex.getMessage(), ex);
 
 		}
