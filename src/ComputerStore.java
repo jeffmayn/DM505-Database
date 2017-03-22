@@ -4,6 +4,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,18 +19,41 @@ import java.util.logging.Logger;
  * @author LRRR
  */
 public class ComputerStore {
-    
-    
- 
+
        public static void main(String[] args) {
 
         start();
-        connect();
-        
+        scan();
+
     }
+       
+       public static void scan(){
+           Scanner sc = new Scanner(System.in);
+           
+           
+           if (sc.nextInt() == 1) {
+                connect();  
+           }
+       }
+       
+        public static void menu(){
+            
+           System.out.println("+---------------------------------------+");
+           System.out.println("|               OPTIONS                 |");
+           System.out.println("+---------------------------------------+");
+           System.out.println("|  Type [1]   -   Current stock         |");
+           System.out.println("|  Type [2]   -   Minimum inventory     |");
+           System.out.println("|  Type [3]   -   Print price list      |");
+           System.out.println("|  Type [4]   -   List for restocking   |");
+           System.out.println("|                                       |");
+           System.out.println("|                                       |");
+           System.out.println("|                                       |");
+           System.out.println("+---------------------------------------+");
+           
+           }
 
     public static void start() {
-        System.out.println("Welcome to the computerstore ...\n");
+        System.out.println("Welcome to the Computerstore Stock Manager (SSM). \n");
     }
 
     public static void connect() {
@@ -50,25 +74,46 @@ public class ComputerStore {
 
 		All_components(con);
     }
-    
     public static void All_components(Connection con){
             try {
 			Statement st = con.createStatement();
-		        String query = "SELECT *"
-                                + "FROM CPU";
-                                
-                                //+ "WHERE *";
+		        String query = "SELECT CPU.name, CPU.type "
+                                + "FROM CPU "
+                                + "UNION "
+
+                                + "SELECT RAM.name, RAM.type "
+                                + "FROM RAM "
+                                + "UNION "
+
+                                + "SELECT GraphicCards.name, GraphicCards.type "
+                                + "FROM GraphicCards "
+                                + "UNION "
+
+                                + "SELECT Mainboard.name, Mainboard.type "
+                                + "FROM Mainboard "
+                                + "UNION "
+
+                                + "SELECT CASE_.name, CASE_.type "
+                                + "FROM CASE_ "
+
+                                + "ORDER BY type";
+
+
 
 		        ResultSet rs = st.executeQuery(query);
-                        
-                        System.out.println("Components:\t\t\t\t\t\t\tQuantity:\n-----------------------------------------------------------------");
+                        System.out.println("List of components and their current amount ...\n");
+                        System.out.println("Qty:\tComponent:\t\t\t\t\tType:");
 		        while (rs.next()) {
-                                String type = rs.getString("type");
+                               // String type = rs.getString("type");
 		            	String name = rs.getString("name");
-                                Integer quantity = rs.getInt("quantity");
+                                String type = rs.getString("type");
 
-		            	System.out.println("(" + type + ") " + name + "\t" + quantity);
+                                int qty = 1;
+
+		            	System.out.println(qty + "\t" + name + "\t" + type);
+
 		        }
+                        System.out.println("\npress [0] to go back.\n");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
