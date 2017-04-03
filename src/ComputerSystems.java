@@ -28,7 +28,7 @@ public class ComputerSystems {
                       String hdd = rs.getString("hdd");
                       String line = "|---------------------------";
 
-                      System.out.print("| " + name + "\n" + line
+                      System.out.print("| PC:  " + name + "\n" + line
                               + "\n| Motherboard:    " + mainboard
                               + "\n| CPU:            " + cpu
                               + "\n| GPU:            " + gpu
@@ -59,13 +59,10 @@ public class ComputerSystems {
                     + "FROM Computersystem ";
 
             ResultSet rs = st.executeQuery(query);
-                    int n = 1;
+
                   while (rs.next()) {
                       String name = rs.getString("name");
-
-
-                      System.out.println("[" + n +"]: " + name);
-                      n++;
+                      System.out.println(name);
                   }
                    System.out.println("\nTo see computer specifications,\n"
                            + "press [0] and choose"
@@ -74,7 +71,6 @@ public class ComputerSystems {
             } catch (SQLException e) {
             }
     }
-
      public static void CalculateNumberOfSystems(Connection con, String name,
              String CPU, String GPU, String RAM, String HDD,
              String CASE, String Mainboard) throws IOException {
@@ -95,12 +91,9 @@ public class ComputerSystems {
             ResultSet rs = st.executeQuery(query);
 
                   while (rs.next()) {
-
-
                       int count = rs.getInt("min");
                      System.out.print(count);
                   }
-
             } catch (SQLException e) {
             }
      }

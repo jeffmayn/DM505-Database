@@ -28,10 +28,9 @@ public class ComputerStore {
     }
 
        public static void main(String[] args) throws IOException, SQLException{
+
         ComputerSystems pc = new ComputerSystems();
-
-       IO io = new IO();
+        IO io = new IO();
         io.input();
-
     }
 }

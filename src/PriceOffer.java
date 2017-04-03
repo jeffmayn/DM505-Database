@@ -12,57 +12,118 @@ public class PriceOffer {
     public static void priceOffer
         (Connection con) throws IOException, SQLException {
 
-        String name;
-        double amount;
-        int system;
+        int amount;
+        String choice;
 
         System.out.println("Available systems for sale:"
                 + "\n-----------------------");
         ComputerSystems.PCnames(con);
 
         Scanner sc = new Scanner(System.in);
-        System.out.println("Type which computersystem, to see offers: ");
-        system = sc.nextInt();
-        if (system == 0) {
-            IO.returnMenu();
-            IO.input();
-        } else {
+        System.out.println("Type which computersystem, to see offers:");
+        System.out.println("( ... OBS: its case-sensitive!)");
+        choice = sc.nextLine();
 
-             System.out.println("How many would you like?: ");
+        System.out.println("\nHow many would you like?: ");
         amount = sc.nextInt();
 
          try {
+
             Statement st = con.createStatement();
-            String query = "SELECT DISTINCT Computersystem.name,"
-                    + " gpu, cpu, mainboard, ram, case_ "
-                    + "FROM Computersystem"
-                    + " JOIN Component ON Computersystem.name = '"
-                    + system + "'";
+            String query = "SELECT *"
+                    + " FROM Computersystem"
+                    + " WHERE Computersystem.name ='" + choice + "';";
 
             ResultSet rs = st.executeQuery(query);
-            System.out.println("Offer on computersystems:\n");
+
                   while (rs.next()) {
-
-                      amount = 10000;
-                      double amount2 = amount*0.98;
-                      double amount3 = amount*0.96;
-                      double amount4 = amount*0.94;
-                      double amount5 = amount*0.92;
-                      double amount6 = amount*0.90;
-                      double amount7 = amount*0.88;
-                      double amount8 = amount*0.86;
-                      double amount9 = amount*0.84;
-                      double amount10 = amount*0.82;
-                      double amount11 = amount*0.80;
-
+                      String gpu = rs.getString("GPU");
+                      String cpu = rs.getString("CPU");
+                      String mainboard = rs.getString("Mainboard");
+                      String ram = rs.getString("RAM");
+                      String case_ = rs.getString("CASE_");
+                      String hdd = rs.getString("hdd");
+                      calculateDiscount(con, amount, choice, cpu,
+                              gpu, mainboard, ram, hdd, case_, amount);
                   }
-                  System.out.println("\npress [0] to return.\n");
-
-                    IO.returnMenu();
-                    IO.input();
-
             } catch (SQLException e) {
             }
-        }
+
     }
+
+        public static void calculateDiscount(Connection con, int n,
+                String name, String CPU, String GPU, String Mainboard,
+                String RAM, String HDD, String CASE, int amount)
+                throws IOException {
+
+          try {
+
+           Statement st = con.createStatement();
+            String query = "SELECT sum(price) AS price"
+                    + " FROM Component"
+                    + " WHERE Component.name = '" + CPU + "'"
+                    + " OR Component.name = '" + GPU + "'"
+                    + " OR Component.name = '" + Mainboard + "'"
+                    + " OR Component.name = '" + RAM + "'"
+                    + " OR Component.name = '" + HDD + "'"
+                    + " OR Component.name = '" + CASE + "'";
+
+            ResultSet rs = st.executeQuery(query);
+
+                  while (rs.next()) {
+
+                      // total price for computersystem + 30%
+                      double price = rs.getDouble("price");
+                      double sellingPrice = price * 1.3;
+
+                      // rounded to nearest '99
+                      double roundedPrice =
+                              (Math.round(sellingPrice/100) * 100) - 1;
+
+                      if (n == 1) {
+                          System.out.println("\n" + n + "x '"
+                                  + name + "': with 0% discount:");
+
+                          System.out.printf("%s%,.2f%s", "Total price: ",
+                                  roundedPrice, "\n\n");
+
+                          System.out.println("press [0] to return.\n");
+                            IO.returnMenu();
+                            IO.input();
+
+                      } else if (n > 1 && n < 11) {
+
+                          double newPrice =
+                                  n * roundedPrice * (1 - ((n-1) * 0.02));
+
+                          double percentage = (100*(n-1)*0.02);
+
+                          System.out.println("\n" + n + "x '" + name
+                                  + "' (with " + (int)percentage
+                                  + "% discount):");
+
+                          System.out.printf("%s%,.2f%s", "Total price: ",
+                                  newPrice, "\n\n");
+
+                          System.out.println("press [0] to return.\n");
+                            IO.returnMenu();
+                            IO.input();
+
+                      } else {
+
+                          double newnewPrice = n * roundedPrice * 0.8;
+                           System.out.println("\n" + n + "x '" + name
+                                   + "' with 20% discount:");
+
+                           System.out.printf("%s%,.2f",
+                                   "Total price: ", newnewPrice);
+
+                           System.out.println("\n\npress [0] to return.\n");
+                            IO.returnMenu();
+                            IO.input();
+                      }
+                  }
+            } catch (SQLException e) {
+            }
+     }
 }

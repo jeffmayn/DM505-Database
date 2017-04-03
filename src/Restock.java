@@ -11,7 +11,6 @@ public class Restock {
 
         int amount;
         int prefered;
-        
         int restockAmount;
 
           System.out.println("Components to restock on saturday\n");
@@ -33,22 +32,18 @@ public class Restock {
                             String kind = rs.getString("kind");
                             amount = rs.getInt("amount");
                             prefered = rs.getInt("preferedAmount");
-                            
                             restockAmount = prefered - amount;
 
                             System.out.printf("%n %-39s %3s %9d",
                                     name, kind, restockAmount);
-
                     }
 
             System.out.println("\n\npress [0] to return.\n");
             IO.returnMenu();
             IO.input();
-
              } catch (SQLException e) {
             }
     }
-
     public static void restockUpdate(Connection con, int restockAmount) {
     }
 }
