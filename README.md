@@ -1,4 +1,4 @@
 # database2017
-DM505 databasedesign og programmering
+DM505 databasedesign and programming
 
-Eksamensprojekt med rapport.
+Examproject including report
